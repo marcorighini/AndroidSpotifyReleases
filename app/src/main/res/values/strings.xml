@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SpotifyReleases</string>
+    <string name="title_album_detail">Album Detail</string>
+    <string name="com_spotify_sdk_redirect_scheme">spotifyreleases</string>
+    <string name="com_spotify_sdk_redirect_host">app</string>
+    <string name="spotify_client_id">c2c5fd99d2234c2b9f5a22427ee3a124</string>
+    <string name="login">Login</string>
+    <string name="cover">Cover</string>
+    <string name="by_author">by %s</string>
+    <string name="favourites">Favourites</string>
+</resources>
