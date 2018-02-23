@@ -3,6 +3,7 @@ package net.marcorighini.spotifyreleases.login
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import kotlinx.android.synthetic.main.activity_login.*
 import net.marcorighini.spotifyreleases.R
@@ -28,13 +29,14 @@ class LoginActivity : AppCompatActivity() {
         viewModel.uiActions.observe(this) { it(this) }
         viewModel.liveData.observe(this) {
             when (it.response) {
-                Resource.Empty -> { // TODO show login button
+                Resource.Empty -> {
                 }
-                Resource.Loading -> { // TODO show loading wheel
+                Resource.Loading -> {
                 }
                 is Resource.Success -> {
                 }
-                is Resource.Error -> { // TODO show toast
+                is Resource.Error -> {
+                    Toast.makeText(this, "Error logging in", Toast.LENGTH_LONG).show()
                 }
             }
         }
