@@ -1,6 +1,6 @@
 package net.marcorighini.spotifyreleases.misc.services
 
-import io.reactivex.Single
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -9,10 +9,10 @@ import retrofit2.http.Query
 
 interface SpotifyService {
     @GET("browse/new-releases")
-    fun getNewReleases(@Header("Authorization") auth: String, @Query("limit") limit: Int): Single<SpotifyServiceModel.NewReleasesResponse>
+    fun getNewReleases(@Header("Authorization") auth: String, @Query("limit") limit: Int): Deferred<SpotifyServiceModel.NewReleasesResponse>
 
     @GET("albums/{id}")
-    fun getAlbum(@Header("Authorization") auth: String, @Path("id") id: String): Single<SpotifyServiceModel.AlbumDetail>
+    fun getAlbum(@Header("Authorization") auth: String, @Path("id") id: String): Deferred<SpotifyServiceModel.AlbumDetail>
 }
 
 object SpotifyServiceModel {

@@ -1,9 +1,11 @@
 package net.marcorighini.spotifyreleases.detail
 
 import android.arch.lifecycle.ViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import net.marcorighini.spotifyreleases.misc.model.AlbumDetail
 import net.marcorighini.spotifyreleases.misc.model.Track
 import net.marcorighini.spotifyreleases.misc.services.PreferencesService
@@ -21,30 +23,31 @@ class AlbumDetailViewModel @Inject constructor(
     val liveData = LiveDataDelegate(AlbumDetailViewState(Resource.Empty, preferences.favourites))
     private var state by liveData
 
-    private val disposable = CompositeDisposable()
+    private val job = Job()
 
     fun loadDetail(id: String) {
         if (state.response == Resource.Empty || state.response is Resource.Error) {
             state = state.copy(response = Resource.Loading)
-            disposable.add(spotifyService.getAlbum("Bearer " + preferences.loginAccessToken, id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(
-                            onSuccess = {
-                                val d = AlbumDetail(it.id, it.images[0].url, it.name, it.artists[0].name, it.tracks.items.map {
-                                    Track(it.name, it.duration_ms, it.track_number)
-                                })
-                                state = state.copy(response = Resource.Success(d))
-                            },
-                            onError = {
-                                state = state.copy(response = Resource.Error(it))
-                            }
-                    )
-            )
+            launch(CommonPool + job) {
+                try {
+                    val res = spotifyService.getAlbum("Bearer " + preferences.loginAccessToken, id).await()
+                    val d = AlbumDetail(res.id, res.images[0].url, res.name, res.artists[0].name, res.tracks.items.map {
+                        Track(it.name, it.duration_ms, it.track_number)
+                    })
+                    withContext(UI) {
+                        state = state.copy(response = Resource.Success(d))
+                    }
+                } catch (e: Exception) {
+                    withContext(UI) {
+                        state = state.copy(response = Resource.Error(e))
+                    }
+                }
+            }
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        disposable.clear()
+        job.cancel()
     }
 }

@@ -1,7 +1,7 @@
 package net.marcorighini.spotifyreleases.misc.services
 
 import android.content.SharedPreferences
-import androidx.content.edit
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.marcorighini.spotifyreleases.misc.model.AlbumSimple

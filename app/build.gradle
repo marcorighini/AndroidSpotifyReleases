@@ -26,8 +26,9 @@ android {
 }
 
 dependencies {
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation"androidx.core:core-ktx:$ktx_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinx_coroutines_android_version"
+    implementation "androidx.core:core-ktx:$ktx_version"
 
     implementation "com.spotify.android:auth:$spotify_version"
 
@@ -41,11 +42,8 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$arch_version"
     kapt "android.arch.lifecycle:compiler:$arch_version"
 
-    implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
-    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:$retrofit_coroutine_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.github.bumptech.glide:glide:$glide_version"
@@ -65,5 +63,11 @@ dependencies {
     testImplementation "com.willowtreeapps.assertk:assertk:$assertk_version"
     testImplementation("com.nhaarman:mockito-kotlin-kt1.1:$mockito_kotlin_version") {
         exclude group: 'org.jetbrains.kotlin'
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
     }
 }
