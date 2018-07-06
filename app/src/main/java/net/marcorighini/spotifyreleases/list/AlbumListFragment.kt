@@ -1,11 +1,13 @@
 package net.marcorighini.spotifyreleases.list
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_album_list.*
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import kotlinx.android.synthetic.main.fragment_album_list.*
 import kotlinx.android.synthetic.main.album_list.*
 import net.marcorighini.spotifyreleases.R
 import net.marcorighini.spotifyreleases.component
@@ -14,16 +16,19 @@ import net.marcorighini.spotifyreleases.misc.utils.Resource
 import net.marcorighini.spotifyreleases.misc.utils.viewModelProvider
 import timber.log.Timber
 
-class AlbumListActivity : AppCompatActivity(), AlbumListAdapter.AlbumClickListener, AlbumListAdapter.AlbumFavouriteToggleListener {
+class AlbumListFragment : Fragment(), AlbumListAdapter.AlbumClickListener, AlbumListAdapter.AlbumFavouriteToggleListener {
     private lateinit var adapter: AlbumListAdapter
     private val viewModel by viewModelProvider { component.listViewModel() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_album_list)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val v = inflater.inflate(R.layout.fragment_album_list, container, false)
+        setHasOptionsMenu(true)
+        return v
+    }
 
-        setSupportActionBar(toolbar)
-        toolbar.title = title
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        toolbar.title = getString(R.string.app_name)
 
         album_list_refresh.setOnRefreshListener { viewModel.refresh() }
 
@@ -42,7 +47,7 @@ class AlbumListActivity : AppCompatActivity(), AlbumListAdapter.AlbumClickListen
                     album_list_refresh.isRefreshing = false
                     album_list_refresh.isEnabled = true
                     Timber.w(it.response.message)
-                    Toast.makeText(this, "Error loading New Released Albums", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity!!, "Error loading New Released Albums", Toast.LENGTH_LONG).show()
                 }
                 is Resource.Success -> {
                     album_list_refresh.isRefreshing = false
@@ -52,7 +57,7 @@ class AlbumListActivity : AppCompatActivity(), AlbumListAdapter.AlbumClickListen
             }
         }
 
-        adapter = AlbumListAdapter(this, null,  null, this, this)
+        adapter = AlbumListAdapter(activity!!, null,  null, this, this)
         album_list.adapter = adapter
     }
 
@@ -69,19 +74,13 @@ class AlbumListActivity : AppCompatActivity(), AlbumListAdapter.AlbumClickListen
         viewModel.onFavouriteToggle(album)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.list, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.action_favourites -> viewModel.onFavouriteClick()
-            else -> {
-            }
-        }
-
-        return true
+        NavigationUI.onNavDestinationSelected(item!!, findNavController())
+        return super.onOptionsItemSelected(item)
     }
 }

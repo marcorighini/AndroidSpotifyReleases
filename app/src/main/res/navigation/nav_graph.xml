@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/loginFragment">
+
+    <fragment android:id="@+id/loginFragment" android:name="net.marcorighini.spotifyreleases.login.LoginFragment" android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action android:id="@+id/action_loginFragment_to_albumListFragment" app:destination="@id/albumListFragment" app:clearTask="true"/>
+    </fragment>
+    <fragment android:id="@+id/albumListFragment" android:name="net.marcorighini.spotifyreleases.list.AlbumListFragment"
+        android:label="fragment_album_list" tools:layout="@layout/fragment_album_list">
+        <action android:id="@+id/action_albumListFragment_to_albumDetailFragment" app:destination="@id/albumDetailFragment"/>
+        <action android:id="@+id/action_albumListFragment_to_favouritesListFragment" app:destination="@id/favouritesListFragment"/>
+    </fragment>
+
+    <fragment android:id="@+id/favouritesListFragment" android:name="net.marcorighini.spotifyreleases.favourites.FavouritesListFragment"
+        android:label="fragment_favourite_list" tools:layout="@layout/fragment_favourite_list"/>
+
+    <fragment android:id="@+id/albumDetailFragment" android:name="net.marcorighini.spotifyreleases.detail.AlbumDetailFragment"
+        android:label="fragment_album_detail" tools:layout="@layout/fragment_album_detail">
+        <argument android:name="album"/>
+    </fragment>
+</navigation>

@@ -6,7 +6,7 @@
     android:id="@+id/album_list_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.marcorighini.spotifyreleases.list.AlbumListActivity">
+    tools:context="net.marcorighini.spotifyreleases.list.AlbumListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/album_list"
@@ -17,7 +17,7 @@
         android:layout_marginRight="16dp"
         app:layoutManager="GridLayoutManager"
         app:spanCount="2"
-        tools:context="net.marcorighini.spotifyreleases.list.AlbumListActivity"
+        tools:context="net.marcorighini.spotifyreleases.list.AlbumListFragment"
         tools:listitem="@layout/album_list_content"/>
 
 </android.support.v4.widget.SwipeRefreshLayout>

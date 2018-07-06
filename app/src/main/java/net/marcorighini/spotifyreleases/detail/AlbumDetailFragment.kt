@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_album_detail.*
-import kotlinx.android.synthetic.main.album_detail.view.*
+import kotlinx.android.synthetic.main.fragment_album_detail.*
+import kotlinx.android.synthetic.main.fragment_album_detail.view.*
 import net.marcorighini.spotifyreleases.R
 import net.marcorighini.spotifyreleases.component
 import net.marcorighini.spotifyreleases.misc.model.AlbumSimple
@@ -17,6 +17,12 @@ import net.marcorighini.spotifyreleases.misc.utils.viewModelProvider
 import timber.log.Timber
 
 class AlbumDetailFragment : Fragment() {
+    /**
+     * arguments = Bundle().apply {
+    putParcelable(AlbumDetailFragment.ALBUM, intent.getParcelableExtra(AlbumDetailFragment.ALBUM))
+    }
+     */
+
     private lateinit var albumSimple: AlbumSimple
     private val viewModel by viewModelProvider { component.detailViewModel() }
     private lateinit var adapter: TracksAdapter
@@ -46,6 +52,16 @@ class AlbumDetailFragment : Fragment() {
         viewModel.loadDetail(albumSimple.id)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_album_detail, container, false)
+
+        rootView.album_detail.text = resources.getString(R.string.by_author, albumSimple.artist).toUpperCase()
+        rootView.album_detail_list.adapter = adapter
+
+        return rootView
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -53,16 +69,6 @@ class AlbumDetailFragment : Fragment() {
         Glide.with(this)
                 .load(albumSimple.cover)
                 .into(activity?.cover!!)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.album_detail, container, false)
-
-        rootView.album_detail.text = resources.getString(R.string.by_author, albumSimple.artist).toUpperCase()
-        rootView.album_detail_list.adapter = adapter
-
-        return rootView
     }
 
     companion object {

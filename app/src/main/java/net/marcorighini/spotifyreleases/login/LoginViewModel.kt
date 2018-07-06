@@ -2,10 +2,12 @@ package net.marcorighini.spotifyreleases.login
 
 import android.app.Activity
 import android.arch.lifecycle.ViewModel
+import android.support.v4.app.Fragment
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
 import com.spotify.sdk.android.authentication.LoginActivity
+import com.spotify.sdk.android.authentication.LoginActivity.REQUEST_CODE
 import net.marcorighini.spotifyreleases.misc.NavigationController
 import net.marcorighini.spotifyreleases.R
 import net.marcorighini.spotifyreleases.misc.services.PreferencesService
@@ -42,11 +44,12 @@ class LoginViewModel @Inject constructor(
         return now >= preferences.loginExpiration
     }
 
-    fun requestAuth(activity: Activity) {
+    fun requestAuth(fragment: Fragment) {
         state.copy(response = Resource.Loading)
-        val builder = AuthenticationRequest.Builder(activity.getString(R.string.spotify_client_id), AuthenticationResponse.Type.TOKEN,
-                activity.getString(R.string.com_spotify_sdk_redirect_scheme) + "://" + activity.getString(R.string.com_spotify_sdk_redirect_host))
-        AuthenticationClient.openLoginActivity(activity, LoginActivity.REQUEST_CODE, builder.build())
+        val builder = AuthenticationRequest.Builder(fragment.getString(R.string.spotify_client_id), AuthenticationResponse.Type.TOKEN,
+                fragment.getString(R.string.com_spotify_sdk_redirect_scheme) + "://" + fragment.getString(R.string.com_spotify_sdk_redirect_host))
+        val intent = AuthenticationClient.createLoginActivityIntent(fragment.activity, builder.build())
+        fragment.startActivityForResult(intent, REQUEST_CODE)
     }
 
     fun onAuthenticationResult(res: AuthenticationResponse) {

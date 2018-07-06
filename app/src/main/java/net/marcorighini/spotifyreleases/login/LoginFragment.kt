@@ -2,26 +2,27 @@ package net.marcorighini.spotifyreleases.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.spotify.sdk.android.authentication.AuthenticationClient
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import net.marcorighini.spotifyreleases.R
 import net.marcorighini.spotifyreleases.component
 import net.marcorighini.spotifyreleases.misc.utils.Resource
 import net.marcorighini.spotifyreleases.misc.utils.viewModelProvider
 
 
-class LoginActivity : AppCompatActivity() {
-
-
+class LoginFragment : Fragment() {
     private val viewModel by viewModelProvider { component.loginViewModel() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_login, container, false)
+    }
 
-        setContentView(R.layout.activity_login)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         login.setOnClickListener {
             viewModel.requestAuth(this)
         }
@@ -36,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
                 is Resource.Success -> {
                 }
                 is Resource.Error -> {
-                    Toast.makeText(this, "Error logging in", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity!!, "Error logging in", Toast.LENGTH_LONG).show()
                 }
             }
         }

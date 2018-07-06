@@ -3,9 +3,10 @@ package net.marcorighini.spotifyreleases.misc.utils
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 
-typealias UiAction = (FragmentActivity) -> Unit
+typealias UiAction = (Fragment) -> Unit
 
 class UiActionsLiveData {
     private var list: MutableList<UiAction> = ArrayList()

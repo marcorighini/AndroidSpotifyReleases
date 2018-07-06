@@ -1,25 +1,28 @@
 package net.marcorighini.spotifyreleases.favourites
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_album_list.*
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import kotlinx.android.synthetic.main.album_list.*
+import kotlinx.android.synthetic.main.fragment_favourite_list.*
 import net.marcorighini.spotifyreleases.R
 import net.marcorighini.spotifyreleases.component
 import net.marcorighini.spotifyreleases.misc.model.AlbumSimple
 import net.marcorighini.spotifyreleases.misc.utils.viewModelProvider
 
 
-class FavouritesListActivity : AppCompatActivity(), FavouritesListAdapter.AlbumClickListener, FavouritesListAdapter.AlbumFavouriteToggleListener {
+class FavouritesListFragment : Fragment(), FavouritesListAdapter.AlbumClickListener, FavouritesListAdapter.AlbumFavouriteToggleListener {
     private lateinit var adapter: FavouritesListAdapter
     private val viewModel by viewModelProvider { component.favouriteViewModel() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_album_list)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_favourite_list, container, false)
+    }
 
-        setSupportActionBar(toolbar)
-        toolbar.title = title
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        toolbar.title = getString(R.string.favourites)
 
         album_list_refresh.isEnabled = false
 
@@ -28,7 +31,7 @@ class FavouritesListActivity : AppCompatActivity(), FavouritesListAdapter.AlbumC
             adapter.replace(it.favourites)
         }
 
-        adapter = FavouritesListAdapter(this, null, this, this)
+        adapter = FavouritesListAdapter(context!!, null, this, this)
         album_list.adapter = adapter
     }
 

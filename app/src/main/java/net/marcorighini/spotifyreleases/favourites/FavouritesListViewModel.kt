@@ -20,7 +20,6 @@ class FavouritesListViewModel @Inject constructor(
 
     init {
         state = state.copy(favourites = preferences.favourites)
-
     }
 
     fun onAlbumClick(album: AlbumSimple) {
