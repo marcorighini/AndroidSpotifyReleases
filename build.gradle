@@ -35,7 +35,8 @@ ext.spotify_version = "1.0.0-alpha"
 ext.ktx_version = "0.3"
 ext.retrofit_coroutine_version = "1.0.0"
 ext.kotlinx_coroutines_android_version = "0.22.2"
-
+ext.rx_kotlin_version = "2.2.0"
+ext.rx_android_version = "2.0.2"
 
 allprojects {
     repositories {
