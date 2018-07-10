@@ -24,7 +24,6 @@ class AlbumListViewModel @Inject constructor(
     val stateLiveData = MediatorLiveData<AlbumListViewState>()
 
     private val job = Job()
-    private val disposable = CompositeDisposable()
 
     init {
         stateLiveData.value = AlbumListViewState(Resource.Empty, mutableListOf())
@@ -50,7 +49,6 @@ class AlbumListViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         job.cancel()
-        disposable.clear()
     }
 
     fun onFavouriteToggle(album: AlbumSimple) {
