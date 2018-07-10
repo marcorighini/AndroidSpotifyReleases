@@ -1,5 +1,6 @@
 package net.marcorighini.spotifyreleases.list
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -33,8 +34,8 @@ class AlbumListFragment : Fragment(), AlbumListAdapter.AlbumClickListener, Album
         album_list_refresh.setOnRefreshListener { viewModel.refresh() }
 
         viewModel.uiActions.observe(this) { it(this) }
-        viewModel.liveData.observe(this) {
-            when (it.response) {
+        viewModel.stateLiveData.observe(this, Observer {
+            when (it?.response) {
                 Resource.Empty -> {
                     album_list_refresh.isRefreshing = false
                     album_list_refresh.isEnabled = true
@@ -46,16 +47,16 @@ class AlbumListFragment : Fragment(), AlbumListAdapter.AlbumClickListener, Album
                 is Resource.Error -> {
                     album_list_refresh.isRefreshing = false
                     album_list_refresh.isEnabled = true
-                    Timber.w(it.response.message)
+                    Timber.w((it.response as Resource.Error).message)
                     Toast.makeText(activity!!, "Error loading New Released Albums", Toast.LENGTH_LONG).show()
                 }
                 is Resource.Success -> {
                     album_list_refresh.isRefreshing = false
                     album_list_refresh.isEnabled = true
-                    adapter.replace(it.response.data, it.favourites)
+                    adapter.replace((it.response as Resource.Success).data, it.favourites)
                 }
             }
-        }
+        })
 
         adapter = AlbumListAdapter(activity!!, null,  null, this, this)
         album_list.adapter = adapter

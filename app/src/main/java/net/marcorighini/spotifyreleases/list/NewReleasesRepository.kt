@@ -1,7 +1,6 @@
 package net.marcorighini.spotifyreleases.list
 
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import android.arch.lifecycle.MutableLiveData
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.withContext
 import net.marcorighini.spotifyreleases.misc.services.PreferencesService
@@ -14,24 +13,27 @@ class NewReleasesRepository @Inject constructor(
         private val api: SpotifyService,
         private val preferencesService: PreferencesService
 ) {
-    private val subject = PublishSubject.create<Resource<SpotifyServiceModel.AlbumsSimple>>()
-    fun releases(): Observable<Resource<SpotifyServiceModel.AlbumsSimple>> = subject
-    private var resource: Resource<SpotifyServiceModel.AlbumsSimple> = Resource.Empty
+    val releases = MutableLiveData<Resource<SpotifyServiceModel.AlbumsSimple>>()
+    private var resource: Resource<SpotifyServiceModel.AlbumsSimple>
+
+    init {
+        resource = Resource.Empty
+        releases.value = resource
+    }
 
     suspend fun refresh() {
         if (resource != Resource.Loading) {
             resource = Resource.Loading
-            subject.onNext(resource)
+            releases.value = resource
             withContext(CommonPool) {
-                try {
+                resource = try {
                     val albums = api.getNewReleases("Bearer " + preferencesService.loginAccessToken, RELEASE_LIMIT).await().albums
-                    resource = Resource.Success(albums)
-                    subject.onNext(resource)
+                    Resource.Success(albums)
                 } catch (e: Exception) {
-                    resource = Resource.Error(e)
-                    subject.onNext(resource)
+                    Resource.Error(e)
                 }
             }
+            releases.value = resource
         }
     }
 
